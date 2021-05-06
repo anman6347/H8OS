@@ -60,29 +60,22 @@ static int elf_load_program(struct elf_header *header) {
     int i;
     struct elf_program_header *phdr;
 
-    puts("offset "); puts("VA       "); puts("PA       "); puts("f_siz "); puts("m_siz "); puts("fl "); puts("al\n"); 
     for (i = 0; i < header->program_header_num; i++) { // セグメント単位でのループ
         /* プログラムヘッダを取得 */
         phdr = (struct elf_program_header *) ((char *)header + header->program_header_offset + header->program_header_size * i);
         if (phdr->type != 1) continue; // ロード可能なセグメントか？
-
-        /* 実験的に実際にはロードせずにセグメント情報を表示する */
-        putxval(phdr->offset, 6);        puts(" ");
-        putxval(phdr->virtual_addr, 8);  puts(" ");
-        putxval(phdr->physical_addr, 8); puts(" ");
-        putxval(phdr->file_size, 5);     puts(" ");
-        putxval(phdr->memory_size, 5);   puts(" ");
-        putxval(phdr->flags, 2);         puts(" ");
-        putxval(phdr->align, 2);         puts("\n");
+        /* セグメント情報を参照してロードする */
+        memcpy((char *)phdr->physical_addr, (char *)header + phdr->offset, phdr->file_size);
+        memset((char *)phdr->physical_addr + phdr->file_size, 0, phdr->memory_size - phdr->file_size); // BSS 領域をゼロ埋め
     }
     return 0;
 }
 
-int elf_load(char *buf) {
+char *elf_load(char *buf) {
     struct elf_header *header = (struct elf_header *)buf;
 
-    if (elf_check(header) < 0) return -1; // ELF ヘッダのチェック
-    if (elf_load_program(header) < 0) return -1; // セグメント単位でのロード
+    if (elf_check(header) < 0) return NULL; // ELF ヘッダのチェック
+    if (elf_load_program(header) < 0) return NULL; // セグメント単位でのロード
 
-    return 0;
+    return (char *)header->entry_point;
 }
