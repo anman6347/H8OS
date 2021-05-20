@@ -1,4 +1,5 @@
 #include "defines.h"
+#include "interrupt.h"
 #include "serial.h"
 #include "lib.h"
 #include "xmodem.h"
@@ -10,6 +11,9 @@ static int init(void) {
     /* data 領域と bss 領域の初期化 */
     memcpy(&data_start, &erodata, (long)&edata - (long)&data_start); // ROM の data セクションを RAM の data セクションにコピー
     memset(&bss_start, 0, (long)&ebss - (long)&bss_start); // RAM の bss セクションを 0 埋め
+
+    /* ソフトウェア・割込みベクタの初期化 */
+    softvec_init();
 
     /* シリアルの初期化 */
     serial_init(SERIAL_DEFAULT_DEVICE_INDEX);
@@ -53,7 +57,8 @@ int main(void) {
 
     extern int buffer_start; // リンカスクリプトで定義されているバッファ。直接アドレスがわかる
 
-    init();
+    INTR_DISABLE; // 割込み無効
+    init(); // data, bss領域の処理や、ソフトウェア・割込み、シリアルの初期化
 
     puts("kozos boot loader started.\n");
 
@@ -93,5 +98,4 @@ int main(void) {
     }
 
     return 0;
-    
 }

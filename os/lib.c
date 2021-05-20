@@ -47,6 +47,7 @@ char *strcpy(char *dst, const char *src) {
         *dst = *src;
         if (*src) break;
     }
+    return d;
 }
 
 /* 文字列比較 */

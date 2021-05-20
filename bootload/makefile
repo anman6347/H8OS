@@ -19,8 +19,8 @@ H8WRITE = ../../../kz_h8write-v0.2.1/PackageFiles/src/kz_h8write
 # Linux:/dev/ttySx, Linux(USB):/dev/ttyUSBx, Windows:comX
 H8WRITE_SERDEV = /dev/ttyS2
 
-OBJS  = vector.o startup.o main.o
-OBJS += lib.o serial.o xmodem.o elf.o
+OBJS  = vector.o startup.o main.o intr.o interrupt.o
+OBJS += lib.o serial.o xmodem.o elf.o 
 
 TARGET = anmanload
 
@@ -35,6 +35,7 @@ LFLAGS = -static -T ld.scr -L.
 
 .SUFFIXES: .c .o
 .SUFFIXES: .s .o
+.SUFFIXES: .S .o
 
 all :		$(TARGET)
 
@@ -48,6 +49,10 @@ $(TARGET) :	$(OBJS)
 
 .s.o :		$<
 		$(CC) -c $(CFLAGS) $<
+
+.S.o :		$<
+		$(CC) -c $(CFLAGS) $<
+
 
 $(TARGET).mot :	$(TARGET)
 		$(OBJCOPY) -O srec $(TARGET) $(TARGET).mot
