@@ -22,7 +22,7 @@ H8WRITE_SERDEV = /dev/ttyS2
 OBJS  = vector.o startup.o main.o intr.o interrupt.o
 OBJS += lib.o serial.o xmodem.o elf.o 
 
-TARGET = anmanload
+TARGET = kozosload
 
 CFLAGS = -Wall -mh -nostdinc -nostdlib -fno-builtin
 #CFLAGS += -mint32 # intを32ビットにすると掛算／割算ができなくなる

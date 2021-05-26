@@ -13,8 +13,14 @@ _intr_softerr:
     mov.l   er1,@-er7
     mov.l   er0,@-er7
     mov.l   er7,er1
+    # 割込みスタックの利用
+    mov.l   #_intrstack,sp
+    mov.l   er1,@-er7
     mov.w   #SOFTVEC_TYPE_SOFTERR,r0
     jsr     @_interrupt
+    # 割込みスタックからの復旧
+    mov.l   @er7+,er1
+    mov.l   er1,er7
     mov.l   @er7+,er0
     mov.l   @er7+,er1
     mov.l   @er7+,er2
@@ -35,8 +41,14 @@ _intr_syscall:
     mov.l   er1,@-er7
     mov.l   er0,@-er7
     mov.l   er7,er1
+    # 割込みスタックの利用
+    mov.l   #_intrstack,sp
+    mov.l   er1,@-er7
     mov.w   #SOFTVEC_TYPE_SYSCALL,r0
     jsr     @_interrupt
+    # 割込みスタックからの復旧
+    mov.l   @er7+,er1
+    mov.l   er1,er7
     mov.l   @er7+,er0
     mov.l   @er7+,er1
     mov.l   @er7+,er2
@@ -57,8 +69,14 @@ _intr_serintr:
     mov.l   er1,@-er7
     mov.l   er0,@-er7
     mov.l   er7,er1
+    # 割込みスタックの利用
+    mov.l   #_intrstack,sp
+    mov.l   er1,@-er7
     mov.w   #SOFTVEC_TYPE_SERINTR,r0
     jsr     @_interrupt
+    # 割込みスタックからの復旧
+    mov.l   @er7+,er1
+    mov.l   er1,er7
     mov.l   @er7+,er0
     mov.l   @er7+,er1
     mov.l   @er7+,er2

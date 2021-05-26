@@ -16,7 +16,10 @@ STRIP   = $(BINDIR)/$(ADDNAME)strip
 OBJS  = startup.o main.o
 OBJS += lib.o serial.o interrupt.o
 
-TARGET = anmanos
+# souces of kozos
+OBJS += kozos.o syscall.o test08_1.o
+
+TARGET = kozos
 
 CFLAGS = -Wall -mh -nostdinc -nostdlib -fno-builtin
 #CFLAGS += -mint32 # intを32ビットにすると掛算／割算ができなくなる

@@ -45,7 +45,7 @@ char *strcpy(char *dst, const char *src) {
     char *d = dst;
     for (;; dst++, src++) {
         *dst = *src;
-        if (*src) break;
+        if (!*src) break;
     }
     return d;
 }
